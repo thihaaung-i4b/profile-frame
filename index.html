@@ -176,6 +176,12 @@
     #canvas {
       width: 100%; max-height: 400px;
       object-fit: contain; display: none; border-radius: 6px;
+      cursor: grab; touch-action: none;
+    }
+    #canvas:active { cursor: grabbing; }
+    .drag-hint {
+      font-size: 0.7rem; color: var(--muted);
+      text-align: center; margin-top: 6px; margin-bottom: -6px;
     }
 
     /* Bottom bar */
@@ -265,6 +271,7 @@
       </div>
       <canvas id="canvas"></canvas>
     </div>
+    <div class="drag-hint" id="dragHint" style="display:none">☝ ဓာတ်ပုံကို ဖိဆွဲ၍ ရွှေ့ပါ</div>
   </div>
 
 </div>
@@ -288,6 +295,8 @@
 
   // ── State ──
   let selIdx = -1, frameImg = null, photoImg = null, zoomPct = 100;
+  let panX = 0, panY = 0; // photo offset in canvas-space pixels
+  let dragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
 
   // ── Preload frames ──
   const preloaded = FRAME_CONFIG.map(f => { const i = new Image(); i.src = f.src; return i; });
@@ -340,6 +349,7 @@
       const img = new Image();
       img.onload = () => {
         photoImg = img;
+        panX = 0; panY = 0;
         document.getElementById('uicon').textContent = '✅';
         document.getElementById('utitle').textContent = 'ဓာတ်ပုံ တင်ပြီး!';
         document.getElementById('usub').style.display = 'none';
@@ -378,13 +388,13 @@
     ctx.closePath();
     ctx.clip();
 
-    // Draw photo centered + scaled inside the clip
+    // Draw photo centered + scaled + panned inside the clip
     const sc = zoomPct / 100;
     const pa = photoImg.naturalWidth / photoImg.naturalHeight;
     let dw, dh;
     if (pa > 1) { dh = S * sc; dw = dh * pa; }
     else { dw = S * sc; dh = dw / pa; }
-    ctx.translate(S / 2, S / 2);
+    ctx.translate(S / 2 + panX, S / 2 + panY);
     ctx.drawImage(photoImg, -dw / 2, -dh / 2, dw, dh);
     ctx.restore();
 
@@ -393,6 +403,7 @@
 
     document.getElementById('ph').style.display = 'none';
     cv.style.display = 'block';
+    document.getElementById('dragHint').style.display = 'block';
     document.getElementById('dlBtn').disabled = false;
   }
 
@@ -418,12 +429,51 @@
     }
   }
 
+  // ── Drag to reposition photo ──
+  (function setupDrag() {
+    const cv = document.getElementById('canvas');
+
+    function getCanvasScale() {
+      // ratio between actual canvas pixels and displayed size
+      return (cv.width || 1080) / cv.getBoundingClientRect().width;
+    }
+
+    function onStart(x, y) {
+      if (!photoImg || !frameImg) return;
+      dragging = true;
+      dragStartX = x;
+      dragStartY = y;
+      panStartX = panX;
+      panStartY = panY;
+    }
+    function onMove(x, y) {
+      if (!dragging) return;
+      const scale = getCanvasScale();
+      panX = panStartX + (x - dragStartX) * scale;
+      panY = panStartY + (y - dragStartY) * scale;
+      render();
+    }
+    function onEnd() { dragging = false; }
+
+    // Mouse events
+    cv.addEventListener('mousedown', e => { e.preventDefault(); onStart(e.clientX, e.clientY); });
+    window.addEventListener('mousemove', e => { if (dragging) { e.preventDefault(); onMove(e.clientX, e.clientY); } });
+    window.addEventListener('mouseup', onEnd);
+
+    // Touch events
+    cv.addEventListener('touchstart', e => { e.preventDefault(); const t = e.touches[0]; onStart(t.clientX, t.clientY); }, { passive: false });
+    window.addEventListener('touchmove', e => { if (dragging) { e.preventDefault(); const t = e.touches[0]; onMove(t.clientX, t.clientY); } }, { passive: false });
+    window.addEventListener('touchend', onEnd);
+    window.addEventListener('touchcancel', onEnd);
+  })();
+
   // ── Reset ──
   function reset() {
     selIdx = -1;
     frameImg = null;
     photoImg = null;
     zoomPct = 100;
+    panX = 0; panY = 0;
     document.querySelectorAll('.frame-card').forEach(c => c.classList.remove('selected'));
     document.getElementById('photoIn').value = '';
     document.getElementById('uicon').textContent = '📷';
@@ -434,6 +484,7 @@
     document.getElementById('zval').textContent = '100%';
     document.getElementById('canvas').style.display = 'none';
     document.getElementById('ph').style.display = '';
+    document.getElementById('dragHint').style.display = 'none';
     document.getElementById('dlBtn').disabled = true;
     toast('↺ Reset ပြီး');
   }
