@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <mask id="m1">
+      <rect width="1080" height="1080" fill="white"/>
+      <circle cx="540" cy="540" r="380" fill="black"/>
+    </mask>
+    <path id="textPath1" d="M 110,540 a 430,430 0 1,1 860,0 a 430,430 0 1,1 -860,0"/>
+  </defs>
+  <!-- Ring -->
+  <circle cx="540" cy="540" r="480" fill="#8b2020" mask="url(#m1)"/>
+  <circle cx="540" cy="540" r="480" fill="none" stroke="#c9860a" stroke-width="4"/>
+  <circle cx="540" cy="540" r="380" fill="none" stroke="#c9860a" stroke-width="3"/>
+  <!-- Text -->
+  <text fill="white" font-size="38" font-weight="bold" font-family="sans-serif">
+    <textPath href="#textPath1" startOffset="15%">PRF ဆောက်ပုံတပ်သား</textPath>
+  </text>
+</svg>

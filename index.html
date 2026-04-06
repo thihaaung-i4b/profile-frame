@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>PRF Profile Frame</title>
+  <meta name="description" content="PRF Profile Frame Generator - ဓာတ်ပုံ Frame ရွေးပြီး ဒေါင်းလုပ်ပါ">
+  <style>
+    :root {
+      --maroon: #6b1a1a;
+      --maroon2: #8b2020;
+      --gold: #c9860a;
+      --gold-light: #f0a830;
+      --bg: #1a0a0a;
+      --card: #2a1010;
+      --card2: #341515;
+      --border: #5a2020;
+      --text: #f5e6d0;
+      --muted: #a08070;
+      --radius: 18px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(180deg, #3a0f0f 0%, #1a0a0a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 52px 20px 22px;
+      text-align: center;
+    }
+    .header-logo {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--gold);
+      margin: 0 auto 12px;
+      display: block;
+    }
+    .header h1 {
+      font-size: 1.6rem; font-weight: 900;
+      color: var(--gold-light); letter-spacing: 1px;
+    }
+    .header p { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* Content */
+    .content { padding: 20px 16px 140px; }
+
+    /* Section label */
+    .sec-label {
+      font-size: 0.7rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--gold); margin-bottom: 12px; padding-left: 2px;
+    }
+
+    /* Frame grid */
+    .frame-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .frame-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 6px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+    }
+    .frame-card:active { transform: scale(0.94); }
+    .frame-card.selected {
+      border-color: var(--gold);
+      background: var(--card2);
+      box-shadow: 0 0 0 1px var(--gold), 0 4px 20px rgba(201,134,10,0.25);
+    }
+    .frame-card img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover; border-radius: 8px; display: block;
+    }
+    .frame-card .fname {
+      font-size: 0.6rem; color: var(--muted);
+      margin-top: 6px; font-weight: 700; line-height: 1.3;
+    }
+    .frame-card.selected .fname { color: var(--gold-light); }
+    .tick {
+      position: absolute; top: 6px; right: 6px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--gold);
+      display: none; align-items: center; justify-content: center;
+      font-size: 0.65rem; color: #1a0a0a; font-weight: 900;
+    }
+    .frame-card.selected .tick { display: flex; }
+
+    /* Upload */
+    .upload-area {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      margin-bottom: 22px;
+      transition: all 0.2s;
+    }
+    .upload-area.done { border-style: solid; border-color: var(--gold); }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: 0; cursor: pointer;
+    }
+    .upload-area .uicon { font-size: 2.2rem; display: block; margin-bottom: 8px; }
+    .upload-area h3 { font-size: 1rem; font-weight: 700; }
+    .upload-area p { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+    .upload-area .udone {
+      font-size: 0.8rem; color: var(--gold-light);
+      font-weight: 700; margin-top: 6px; display: none;
+    }
+
+    /* Zoom */
+    .zoom-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 22px;
+    }
+    .zoom-wrap {
+      display: flex; align-items: center;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 50px; overflow: hidden;
+    }
+    .zbtn {
+      background: none; border: none;
+      padding: 13px 24px; font-size: 1.5rem;
+      color: var(--text); cursor: pointer;
+      transition: background 0.15s; min-width: 62px;
+    }
+    .zbtn:active { background: var(--card2); }
+    .zval {
+      padding: 13px 18px; font-size: 0.88rem;
+      font-weight: 800; color: var(--gold-light);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      min-width: 76px; text-align: center;
+    }
+
+    /* Preview */
+    .preview-card {
+      background: #000;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden; margin-bottom: 20px;
+    }
+    .preview-top {
+      padding: 11px 16px 0;
+      font-size: 0.68rem; font-weight: 800;
+      color: var(--gold); text-transform: uppercase;
+      letter-spacing: 0.08em; background: var(--card);
+    }
+    .preview-inner {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 240px; padding: 10px; background: #000;
+    }
+    .preview-ph { text-align: center; color: var(--muted); }
+    .preview-ph .phi { font-size: 2.6rem; display: block; margin-bottom: 8px; }
+    .preview-ph p { font-size: 0.82rem; line-height: 1.5; }
+    #canvas {
+      width: 100%; max-height: 400px;
+      object-fit: contain; display: none; border-radius: 6px;
+    }
+
+    /* Bottom bar */
+    .bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      padding: 12px 16px calc(14px + var(--safe-bottom));
+      background: linear-gradient(180deg, transparent, #1a0a0a 22%);
+      display: flex; gap: 10px; z-index: 100;
+    }
+    .btn {
+      flex: 1; padding: 16px 12px; border-radius: 50px;
+      border: none; font-size: 0.95rem; font-weight: 800;
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; min-height: 54px;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-dl {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      color: #1a0a0a;
+    }
+    .btn-dl:disabled { opacity: 0.3; }
+    .btn-rst {
+      background: var(--card2); color: var(--muted);
+      border: 1px solid var(--border);
+      flex: 0 0 54px; border-radius: 50%; padding: 0; font-size: 1.2rem;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; top: 20px; left: 50%;
+      transform: translateX(-50%) translateY(-90px);
+      background: var(--card2); color: var(--gold-light);
+      border: 1px solid var(--gold);
+      padding: 10px 22px; border-radius: 50px;
+      font-size: 0.82rem; font-weight: 700; z-index: 999;
+      transition: transform 0.28s ease; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="header">
+  <img class="header-logo" id="headerLogo" src="frames/logo.svg" alt="PRF Logo"
+       onerror="this.style.background='var(--maroon)'; this.style.display='flex';">
+  <h1>PRF</h1>
+  <p>ဓာတ်ပုံ Frame ရွေးပြီး ဒေါင်းလုပ်ပါ</p>
+</div>
+
+<div class="content">
+
+  <!-- Step 1: Frame -->
+  <div class="sec-label">① Frame ရွေးချယ်ပါ</div>
+  <div class="frame-grid" id="frameGrid">
+    <!-- Frame cards are generated dynamically from config -->
+  </div>
+
+  <!-- Step 2: Upload -->
+  <div class="sec-label">② ဓာတ်ပုံ တင်ပါ</div>
+  <div class="upload-area" id="upArea">
+    <input type="file" id="photoIn" accept="image/*" onchange="loadPhoto(event)">
+    <span class="uicon" id="uicon">📷</span>
+    <h3 id="utitle">ဓာတ်ပုံ ရွေးချယ်ပါ</h3>
+    <p id="usub">JPG · PNG · WEBP</p>
+    <div class="udone" id="udone">✓ ဓာတ်ပုံ တင်ပြီး</div>
+  </div>
+
+  <!-- Zoom -->
+  <div class="zoom-row">
+    <div class="zoom-wrap">
+      <button class="zbtn" onclick="zoom(-10)">−</button>
+      <div class="zval" id="zval">100%</div>
+      <button class="zbtn" onclick="zoom(10)">+</button>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="preview-card">
+    <div class="preview-top">👁 Preview</div>
+    <div class="preview-inner">
+      <div class="preview-ph" id="ph">
+        <span class="phi">🎨</span>
+        <p>Frame နဲ့ ဓာတ်ပုံ ရွေးပြီးမှ<br>Preview ပေါ်လာမည်</p>
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom bar -->
+<div class="bar">
+  <button class="btn btn-rst" onclick="reset()" title="Reset">↺</button>
+  <button class="btn btn-dl" id="dlBtn" onclick="download()" disabled>⬇ ဒေါင်းလုပ်</button>
+</div>
+
+<script>
+  // ── Configuration ──
+  // Add your frame overlay PNGs to the frames/ folder and list them here.
+  // Each frame needs: src (path to PNG), name (label shown below).
+  // The PNG should be square with a transparent center for the photo to show through.
+  const FRAME_CONFIG = [
+    { src: 'frames/frame1.svg', name: 'ဂေနောက်ဖွဲ့<br>တပ်သာ' },
+    { src: 'frames/frame2.svg', name: 'ဆောက်ပူ<br>တပ်ဝိသာ' },
+    { src: 'frames/frame3.svg', name: 'ဂေယာင်ဖိတ်<br>သာ' },
+  ];
+
+  // ── State ──
+  let selIdx = -1, frameImg = null, photoImg = null, zoomPct = 100;
+
+  // ── Preload frames ──
+  const preloaded = FRAME_CONFIG.map(f => { const i = new Image(); i.src = f.src; return i; });
+
+  // ── Build frame grid ──
+  (function buildGrid() {
+    const grid = document.getElementById('frameGrid');
+    FRAME_CONFIG.forEach((f, i) => {
+      const card = document.createElement('div');
+      card.className = 'frame-card';
+      card.id = 'fc' + i;
+      card.onclick = () => pick(i);
+      card.innerHTML = `
+        <img src="${f.src}" alt="Frame ${i+1}">
+        <div class="tick">✓</div>
+        <div class="fname">${f.name}</div>
+      `;
+      grid.appendChild(card);
+    });
+  })();
+
+  // ── Toast ──
+  function toast(msg, ms = 2200) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), ms);
+  }
+
+  // ── Pick frame ──
+  function pick(idx) {
+    selIdx = idx;
+    document.querySelectorAll('.frame-card').forEach((c, i) => c.classList.toggle('selected', i === idx));
+    frameImg = preloaded[idx];
+    if (frameImg.complete && frameImg.naturalWidth > 0) {
+      render();
+      toast('✓ Frame ရွေးပြီး');
+    } else {
+      frameImg.onload = () => { render(); toast('✓ Frame ရွေးပြီး'); };
+    }
+  }
+
+  // ── Load photo ──
+  function loadPhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        photoImg = img;
+        document.getElementById('uicon').textContent = '✅';
+        document.getElementById('utitle').textContent = 'ဓာတ်ပုံ တင်ပြီး!';
+        document.getElementById('usub').style.display = 'none';
+        document.getElementById('udone').style.display = 'block';
+        document.getElementById('upArea').classList.add('done');
+        render();
+        toast('📷 ဓာတ်ပုံ တင်ပြီး');
+      };
+      img.src = ev.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+
+  // ── Zoom ──
+  function zoom(d) {
+    zoomPct = Math.max(40, Math.min(220, zoomPct + d));
+    document.getElementById('zval').textContent = zoomPct + '%';
+    render();
+  }
+
+  // ── Render composite ──
+  function render() {
+    if (!frameImg || !photoImg) return;
+    const cv = document.getElementById('canvas');
+    const ctx = cv.getContext('2d');
+    const S = frameImg.naturalWidth || 1080;
+    cv.width = S;
+    cv.height = S;
+    ctx.clearRect(0, 0, S, S);
+
+    // Draw photo centered + scaled
+    const sc = zoomPct / 100;
+    const pa = photoImg.naturalWidth / photoImg.naturalHeight;
+    let dw, dh;
+    if (pa > 1) { dh = S * sc; dw = dh * pa; }
+    else { dw = S * sc; dh = dw / pa; }
+    ctx.save();
+    ctx.translate(S / 2, S / 2);
+    ctx.drawImage(photoImg, -dw / 2, -dh / 2, dw, dh);
+    ctx.restore();
+
+    // Frame overlay on top
+    ctx.drawImage(frameImg, 0, 0, S, S);
+
+    document.getElementById('ph').style.display = 'none';
+    cv.style.display = 'block';
+    document.getElementById('dlBtn').disabled = false;
+  }
+
+  // ── Download ──
+  function download() {
+    const cv = document.getElementById('canvas');
+    if (!cv.width) return;
+    try {
+      cv.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'PRF-frame.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast('✅ ဒေါင်းလုပ် ပြီးပြီ!');
+      }, 'image/png');
+    } catch (e) {
+      window.open(cv.toDataURL('image/png'), '_blank');
+      toast('📂 ဓာတ်ပုံကို ဖိ၍ သိမ်းပါ');
+    }
+  }
+
+  // ── Reset ──
+  function reset() {
+    selIdx = -1;
+    frameImg = null;
+    photoImg = null;
+    zoomPct = 100;
+    document.querySelectorAll('.frame-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('photoIn').value = '';
+    document.getElementById('uicon').textContent = '📷';
+    document.getElementById('utitle').textContent = 'ဓာတ်ပုံ ရွေးချယ်ပါ';
+    document.getElementById('usub').style.display = '';
+    document.getElementById('udone').style.display = 'none';
+    document.getElementById('upArea').classList.remove('done');
+    document.getElementById('zval').textContent = '100%';
+    document.getElementById('canvas').style.display = 'none';
+    document.getElementById('ph').style.display = '';
+    document.getElementById('dlBtn').disabled = true;
+    toast('↺ Reset ပြီး');
+  }
+</script>
+
+</body>
+</html>
