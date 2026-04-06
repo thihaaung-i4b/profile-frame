@@ -53,7 +53,7 @@
     .header p { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
 
     /* Content */
-    .content { padding: 20px 16px 140px; }
+    .content { padding: 20px 16px 100px; }
 
     /* Section label */
     .sec-label {
@@ -187,8 +187,8 @@
     /* Bottom bar */
     .bar {
       position: fixed; bottom: 0; left: 0; right: 0;
-      padding: 12px 16px calc(14px + var(--safe-bottom));
-      background: linear-gradient(180deg, transparent, #1a0a0a 22%);
+      padding: 14px 16px calc(14px + var(--safe-bottom));
+      background: linear-gradient(180deg, rgba(26,10,10,0) 0%, #1a0a0a 18%);
       display: flex; gap: 10px; z-index: 100;
     }
     .btn {
@@ -219,8 +219,98 @@
       padding: 10px 22px; border-radius: 50px;
       font-size: 0.82rem; font-weight: 700; z-index: 999;
       transition: transform 0.28s ease; white-space: nowrap;
+      max-width: 90vw;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── Responsive: max-width wrapper for desktop/tablet ── */
+    .content {
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .bar {
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Small phones (≤ 380px) ── */
+    @media (max-width: 380px) {
+      .header { padding: 36px 14px 16px; }
+      .header-logo { width: 56px; height: 56px; }
+      .header h1 { font-size: 1.3rem; }
+      .header p { font-size: 0.72rem; }
+      .content { padding: 14px 10px 130px; }
+      .frame-grid { gap: 6px; }
+      .frame-card { padding: 5px 4px 6px; border-radius: 10px; }
+      .frame-card .fname { font-size: 0.5rem; }
+      .tick { width: 16px; height: 16px; font-size: 0.55rem; top: 4px; right: 4px; }
+      .upload-area { padding: 20px 14px; }
+      .upload-area .uicon { font-size: 1.8rem; }
+      .upload-area h3 { font-size: 0.88rem; }
+      .zbtn { padding: 10px 18px; font-size: 1.2rem; min-width: 50px; }
+      .zval { padding: 10px 12px; font-size: 0.78rem; min-width: 60px; }
+      .btn { padding: 14px 10px; font-size: 0.85rem; min-height: 48px; }
+      .btn-rst { flex: 0 0 48px; }
+      .bar { padding: 10px 10px calc(10px + var(--safe-bottom)); }
+    }
+
+    /* ── Mobile (381px – 480px) ── */
+    @media (min-width: 381px) and (max-width: 480px) {
+      .header { padding: 40px 16px 18px; }
+      .header-logo { width: 60px; height: 60px; }
+      .content { padding: 16px 12px 130px; }
+      .frame-grid { gap: 8px; }
+      .frame-card { padding: 6px 5px 8px; }
+      .frame-card .fname { font-size: 0.55rem; }
+      .upload-area { padding: 24px 16px; }
+      .btn { min-height: 50px; }
+    }
+
+    /* ── Tablet (481px – 768px) ── */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .header { padding: 44px 20px 20px; }
+      .content { padding: 20px 16px 140px; }
+      .frame-grid { gap: 12px; }
+    }
+
+    /* ── Desktop (769px+) ── */
+    @media (min-width: 769px) {
+      .header { padding: 48px 24px 24px; }
+      .header-logo { width: 80px; height: 80px; }
+      .header h1 { font-size: 1.8rem; }
+      .content { padding: 24px 20px 140px; }
+      .frame-grid { gap: 14px; }
+      .frame-card { padding: 10px 8px 12px; border-radius: 16px; }
+      .frame-card .fname { font-size: 0.7rem; }
+      .upload-area { padding: 36px 24px; }
+      .upload-area h3 { font-size: 1.1rem; }
+      .preview-inner { min-height: 320px; padding: 16px; }
+      #canvas { max-height: 500px; }
+    }
+
+    /* ── Landscape mobile: horizontal scroll for frame grid ── */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .header { padding: 16px 16px 12px; }
+      .header-logo { width: 40px; height: 40px; margin-bottom: 6px; }
+      .header h1 { font-size: 1.2rem; }
+      .header p { font-size: 0.7rem; }
+      .content { padding: 12px 12px 100px; }
+      .frame-grid {
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .upload-area { padding: 16px 12px; }
+      .upload-area .uicon { font-size: 1.6rem; margin-bottom: 4px; }
+      .upload-area h3 { font-size: 0.88rem; }
+      .preview-inner { min-height: 160px; }
+      #canvas { max-height: 250px; }
+      .bar { padding: 8px 12px calc(8px + var(--safe-bottom)); }
+      .btn { padding: 10px 8px; min-height: 42px; font-size: 0.85rem; }
+      .btn-rst { flex: 0 0 42px; }
+    }
   </style>
 </head>
 <body>
