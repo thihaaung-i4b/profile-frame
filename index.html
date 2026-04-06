@@ -370,13 +370,20 @@
     cv.height = S;
     ctx.clearRect(0, 0, S, S);
 
-    // Draw photo centered + scaled
+    // Clip photo to a circle so it doesn't bleed outside the frame ring
+    const clipR = S * 0.352; // radius of the transparent hole in the frame
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(S / 2, S / 2, clipR, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+
+    // Draw photo centered + scaled inside the clip
     const sc = zoomPct / 100;
     const pa = photoImg.naturalWidth / photoImg.naturalHeight;
     let dw, dh;
     if (pa > 1) { dh = S * sc; dw = dh * pa; }
     else { dw = S * sc; dh = dw / pa; }
-    ctx.save();
     ctx.translate(S / 2, S / 2);
     ctx.drawImage(photoImg, -dw / 2, -dh / 2, dw, dh);
     ctx.restore();
