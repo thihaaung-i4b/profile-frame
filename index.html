@@ -365,13 +365,7 @@
         position: relative;
       }
       .or-divider::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: var(--border);
+        display: none;
       }
       .or-divider span {
         position: relative;
@@ -704,6 +698,7 @@
       />
       <h1>PRF</h1>
       <p>ဓာတ်ပုံ Frame ရွေးပြီး ဒေါင်းလုပ်ပါ</p>
+      <p style="max-width:600px; margin:12px auto 0; font-size:0.85rem; color:var(--muted); line-height:1.7; text-align:center;">နွေဦးတော်လှန်ရေးမှာ နိုင်ရာဝန်ကို ပခုံးထမ်း သယ်ပိုးနေကြတဲ့ ထောက်ပို့တပ်သားတိုင်းအတွက် 'PRF ကိုယ်ပိုင်အမှတ်' ဟာ ခိုင်မာတဲ့ သမိုင်းမှတ်တိုင်တခုပဲ ဖြစ်ပါတယ်။ ခင်ဗျားတို့မှာရော ဒီဂုဏ်ယူဖွယ်ရာ "PRF ထောက်ပို့တပ်သား ကိုယ်ပိုင်အမှတ် ရှိပြီလား?</p>
     </div>
 
     <div class="content">
@@ -747,15 +742,6 @@
         <!-- Avatar cards are generated dynamically from config -->
       </div>
 
-      <!-- Zoom -->
-      <div class="zoom-row">
-        <div class="zoom-wrap">
-          <button class="zbtn" onclick="zoom(-10)">−</button>
-          <div class="zval" id="zval">100%</div>
-          <button class="zbtn" onclick="zoom(10)">+</button>
-        </div>
-      </div>
-
       <!-- Preview -->
       <div class="preview-card">
         <div class="preview-top">👁 Preview</div>
@@ -768,6 +754,19 @@
         </div>
         <div class="drag-hint" id="dragHint" style="display: none">
           ☝ ဓာတ်ပုံကို ဖိဆွဲ၍ ရွှေ့ပါ
+        </div>
+      </div>
+
+      <!-- Zoom & Rotate -->
+      <div class="zoom-row">
+        <div class="zoom-wrap">
+          <button class="zbtn" onclick="zoom(-10)">−</button>
+          <div class="zval" id="zval">100%</div>
+          <button class="zbtn" onclick="zoom(10)">+</button>
+        </div>
+        <div class="zoom-wrap" style="margin-left:12px;">
+          <button class="zbtn" onclick="rotate(-90)">↶</button>
+          <button class="zbtn" onclick="rotate(90)">↷</button>
         </div>
       </div>
     </div>
@@ -783,20 +782,20 @@
     <script>
       // ── Configuration ──
       const FRAME_CONFIG = [
-        { src: "Photo_Frame_Apr_2026/1.png", name: "Frame 1" },
-        { src: "Photo_Frame_Apr_2026/2.png", name: "Frame 2" },
-        { src: "Photo_Frame_Apr_2026/3.png", name: "Frame 3" },
+        { src: "Final/Frame Solid BG/PF 1_.png", name: "Frame 1" },
+        { src: "Final/Frame Solid BG/PF 2.png", name: "Frame 2" },
+        { src: "Final/Frame Solid BG/PF 3.png", name: "Frame 3" },
       ];
 
       const AVATAR_CONFIG = [
-        { src: "Photo_Frame_Apr_2026/Avatar 1_M.png", name: "Avatar 1 (M)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 1_F.png", name: "Avatar 1 (F)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 2_M.png", name: "Avatar 2 (M)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 2_F.png", name: "Avatar 2 (F)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 3_M.png", name: "Avatar 3 (M)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 3_F.png", name: "Avatar 3 (F)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 4_M.png", name: "Avatar 4 (M)" },
-        { src: "Photo_Frame_Apr_2026/Avatar 4_F.png", name: "Avatar 4 (F)" },
+        { src: "Final/Avatar BG change/C 1.png", name: "Avatar 1" },
+        { src: "Final/Avatar BG change/C 2.png", name: "Avatar 2" },
+        { src: "Final/Avatar BG change/C 3.png", name: "Avatar 3" },
+        { src: "Final/Avatar BG change/C 4.png", name: "Avatar 4" },
+        { src: "Final/Avatar BG change/C 5.png", name: "Avatar 5" },
+        { src: "Final/Avatar BG change/C 6.png", name: "Avatar 6" },
+        { src: "Final/Avatar BG change/C 7.png", name: "Avatar 7" },
+        { src: "Final/Avatar BG change/C 8.png", name: "Avatar 8" },
       ];
 
       // ── State ──
@@ -806,6 +805,7 @@
         zoomPct = 100;
       let panX = 0,
         panY = 0;
+      let rotateDeg = 0;
       let dragging = false,
         dragStartX = 0,
         dragStartY = 0,
@@ -961,6 +961,12 @@
         render();
       }
 
+      // ── Rotate ──
+      function rotate(d) {
+        rotateDeg = (rotateDeg + d) % 360;
+        render();
+      }
+
       // ── Render composite ──
       function render() {
         if (!frameImg || !photoImg) return;
@@ -987,6 +993,7 @@
         }
         ctx.save();
         ctx.translate(S / 2 + panX, S / 2 + panY);
+        ctx.rotate((rotateDeg * Math.PI) / 180);
         ctx.drawImage(photoImg, -dw / 2, -dh / 2, dw, dh);
         ctx.restore();
 
@@ -1153,6 +1160,7 @@
         zoomPct = 100;
         panX = 0;
         panY = 0;
+        rotateDeg = 0;
         document
           .querySelectorAll(".frame-card")
           .forEach((c) => c.classList.remove("selected"));
