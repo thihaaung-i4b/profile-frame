@@ -86,7 +86,7 @@
 
       /* Content */
       .content {
-        padding: 20px 16px 4px;
+        padding: 20px 16px 0;
       }
 
       /* Section label */
@@ -312,7 +312,7 @@
         text-align: center;
         font-size: 0.68rem;
         color: var(--muted);
-        padding: 2px 24px 4px;
+        padding: 0 24px 2px;
         line-height: 1.5;
         opacity: 0.7;
       }
@@ -452,7 +452,7 @@
       /* CTA hashtag section */
       .cta-section {
         text-align: center;
-        padding: 8px 16px;
+        padding: 2px 16px;
         padding-bottom: calc(90px + var(--safe-bottom));
         max-width: 600px;
         margin: 0 auto;
@@ -840,21 +840,12 @@
           <button class="zbtn" onclick="rotate(90)">↷</button>
         </div>
       </div>
-    </div>
 
-    <!-- Bottom bar (hidden until image is ready) -->
-    <div class="bar" id="bottomBar" style="display:none">
-      <button class="btn btn-rst" onclick="reset()" title="Reset">↺</button>
-      <button class="btn btn-dl" id="dlBtn" onclick="download()" disabled>
-        ⬇ ဒေါင်းလုပ်
-      </button>
-    </div>
+      <div class="privacy-notice">
+        🔒 ရဲဘော်၏ ကိုယ်ရေးအချက်အလက် လုံခြုံမှုကို ကျွန်ုပ်တို့ အလေးထားပါသည်။ တင်လိုက်သော ဓာတ်ပုံများကို ပုံထုတ်ပြီးသည်နှင့် Server မှ အလိုအလျောက် ပြန်လည်ဖျက်သိမ်းပေးသွားမည် ဖြစ်ပါသည်။
+      </div>
 
-    <div class="privacy-notice">
-      🔒 ရဲဘော်၏ ကိုယ်ရေးအချက်အလက် လုံခြုံမှုကို ကျွန်ုပ်တို့ အလေးထားပါသည်။ တင်လိုက်သော ဓာတ်ပုံများကို ပုံထုတ်ပြီးသည်နှင့် Server မှ အလိုအလျောက် ပြန်လည်ဖျက်သိမ်းပေးသွားမည် ဖြစ်ပါသည်။
-    </div>
-
-    <div class="cta-section">
+      <div class="cta-section">
       <p class="cta-text">
         ဓာတ်ပုံကို အောက်ပါ Hashtag လေးတွေနဲ့ အတူ Facebook ပေါ်မှာ မျှဝေပြီး Campaign ကိုအားဖြည့်ပါဝင်ပေးကြဖို့ တိုက်တွန်းနှိုးဆော်လိုက်ပါတယ်။
       </p>
@@ -867,6 +858,15 @@
         <span class="hashtag-box" onclick="copyTag(this)">#လာပါငါတို့အတူတူရုန်းမယ်</span>
       </div>
       <button class="cta-copy-all" onclick="copyAllTags()">📋 Hashtag အားလုံး Copy ကူးမယ်</button>
+    </div>
+    </div>
+
+    <!-- Bottom bar (hidden until image is ready) -->
+    <div class="bar" id="bottomBar" style="display:none">
+      <button class="btn btn-rst" onclick="reset()" title="Reset">↺</button>
+      <button class="btn btn-dl" id="dlBtn" onclick="download()" disabled>
+        ⬇ ဒေါင်းလုပ်
+      </button>
     </div>
 
     <script>
@@ -1129,8 +1129,9 @@
               return;
             }
 
-            // Try Web Share API first (mobile — saves to Photos)
-            if (navigator.canShare && navigator.canShare({ files: [new File([blob], 'PRF-frame.png', { type: 'image/png' })] })) {
+            // Try Web Share API only on mobile (desktop should always direct-download)
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile && navigator.canShare && navigator.canShare({ files: [new File([blob], 'PRF-frame.png', { type: 'image/png' })] })) {
               try {
                 const file = new File([blob], 'PRF-frame.png', { type: 'image/png' });
                 await navigator.share({ files: [file], title: 'PRF Profile Frame' });
