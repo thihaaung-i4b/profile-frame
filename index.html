@@ -318,22 +318,11 @@
 
       /* Bottom bar */
       .bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
         padding: 14px 16px calc(14px + var(--safe-bottom));
-        background: linear-gradient(
-          180deg,
-          rgba(26, 10, 10, 0) 0%,
-          #1a0a0a 18%
-        );
         display: flex;
         gap: 10px;
-        z-index: 100;
         max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
       }
       .btn {
         flex: 1;
@@ -449,8 +438,7 @@
       /* CTA hashtag section */
       .cta-section {
         text-align: center;
-        padding: 2px 16px;
-        padding-bottom: calc(56px + var(--safe-bottom));
+        padding: 2px 16px 8px;
         max-width: 600px;
         margin: 0 auto;
       }
@@ -844,14 +832,13 @@
       </div>
       <button class="cta-copy-all" onclick="copyAllTags()">📋 Hashtag အားလုံး Copy ကူးမယ်</button>
     </div>
-    </div>
-
-    <!-- Bottom bar (hidden until image is ready) -->
-    <div class="bar" id="bottomBar" style="display:none">
-      <button class="btn btn-rst" onclick="reset()" title="Reset">↺</button>
-      <button class="btn btn-dl" id="dlBtn" onclick="download()" disabled>
-        ⬇ ဒေါင်းလုပ်
-      </button>
+      <!-- Bottom bar (hidden until image is ready) -->
+      <div class="bar" id="bottomBar" style="display:none">
+        <button class="btn btn-rst" onclick="reset()" title="Reset">↺</button>
+        <button class="btn btn-dl" id="dlBtn" onclick="download()" disabled>
+          ⬇ ဒေါင်းလုပ်
+        </button>
+      </div>
     </div>
 
     <script>
