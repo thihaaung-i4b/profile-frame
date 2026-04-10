@@ -78,15 +78,14 @@
         color: var(--gold-light);
         letter-spacing: 1px;
       }
-      .header p {
-        font-size: 0.82rem;
-        color: var(--muted);
-        margin-top: 4px;
-      }
+      /* header p uses inline styles on the element */
 
       /* Content */
       .content {
         padding: 20px 16px 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       /* Section label */
@@ -332,6 +331,9 @@
         display: flex;
         gap: 10px;
         z-index: 100;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .btn {
         flex: 1;
@@ -372,13 +374,8 @@
       .or-divider {
         text-align: center;
         margin: 0 0 18px;
-        position: relative;
-      }
-      .or-divider::before {
-        display: none;
       }
       .or-divider span {
-        position: relative;
         background: var(--bg);
         padding: 0 14px;
         font-size: 0.78rem;
@@ -453,7 +450,7 @@
       .cta-section {
         text-align: center;
         padding: 2px 16px;
-        padding-bottom: calc(90px + var(--safe-bottom));
+        padding-bottom: calc(56px + var(--safe-bottom));
         max-width: 600px;
         margin: 0 auto;
       }
@@ -533,18 +530,6 @@
         transform: translateX(-50%) translateY(0);
       }
 
-      /* ── Responsive: max-width wrapper for desktop/tablet ── */
-      .content {
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-      .bar {
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
       /* ── Small phones (≤ 380px) ── */
       @media (max-width: 380px) {
         .header {
@@ -561,7 +546,7 @@
           font-size: 0.72rem;
         }
         .content {
-          padding: 14px 10px 130px;
+          padding: 14px 10px 0;
         }
         .frame-grid {
           gap: 6px;
@@ -632,7 +617,7 @@
           height: 60px;
         }
         .content {
-          padding: 16px 12px 130px;
+          padding: 16px 12px 0;
         }
         .frame-grid {
           gap: 8px;
@@ -657,7 +642,7 @@
           padding: 44px 20px 20px;
         }
         .content {
-          padding: 20px 16px 140px;
+          padding: 20px 16px 0;
         }
         .frame-grid {
           gap: 12px;
@@ -677,7 +662,7 @@
           font-size: 1.8rem;
         }
         .content {
-          padding: 24px 20px 140px;
+          padding: 24px 20px 0;
         }
         .frame-grid {
           gap: 14px;
@@ -721,7 +706,7 @@
           font-size: 0.7rem;
         }
         .content {
-          padding: 12px 12px 100px;
+          padding: 12px 12px 0;
         }
         .frame-grid {
           grid-template-columns: repeat(3, minmax(120px, 1fr));
